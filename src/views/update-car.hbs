@@ -1,0 +1,122 @@
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <title>Edit User</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+
+    input[type='text'], input[type='email'], input[type='password'] {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box; /* Added to keep input width consistent */
+    }
+
+    input[type='submit'] {
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    input[type='submit']:hover {
+      background: #0056b3;
+    }
+    /* Add some basic styling for the navigation bar */
+    .navbar {
+      overflow: hidden;
+      background-color: #333;
+      font-family: Arial, sans-serif;
+      width: 100%;
+    }
+
+    /* Navigation bar links */
+    .navbar a {
+      float: left;
+      display: block;
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      text-decoration: none;
+    }
+
+    /* Change color on hover */
+    .navbar a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation bar -->
+  <div class="navbar">
+    <a href="/cars/view">Home</a>
+  </div>
+  <h1>{{message}}</h1>
+  <form action='/cars/update' method='POST' autocomplete="on">
+
+    <input type='hidden' name='id' value='{{car.id}}' /> <!-- must be added so we know what user to update -->
+
+    <label for='make'>Make</label>
+    <input type='text' id='make' name='make' value={{car.make}}/>
+
+    <label for='model'>Model</label>
+    <input type='text' id='model' name='model' value={{car.model}}/>
+
+    <label for='year'>Year</label>
+    <input type='text' id='year' name='year' value={{car.year}}/>
+
+    <label for='pricePerDay'>Price Per Day</label>
+    <input type='text' id='pricePerDay' name='pricePerDay' value={{car.pricePerDay}}/>
+
+    <label for='availabilityStatus'>Availability Status</label>
+    <input type='text' id='availabilityStatus' name='availabilityStatus' value={{car.availabilityStatus}}/>
+
+    <label for='description'>Description</label>
+    <textarea id='description' name='description' value={{car.description}}></textarea>
+
+    <label for='ownerId'>Owner</label>
+    <select id='ownerId' name='ownerId' required>
+        {{#each users}}
+            <option value='{{this.user.id}}'>{{this.userName}}</option>
+        {{/each}}
+    </select>
+
+    <input type='submit' value='Update' />
+  </form>
+  <button onclick="location.href='/cars/view'" style="margin-top: 10px;">Cancel</button>
+
+</body>
+</html>
