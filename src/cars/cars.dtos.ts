@@ -57,6 +57,9 @@ export class CarDetailsDto {
   id: string;
 
   @Expose()
+  make: string;
+
+  @Expose()
   model: string;
 
   @Expose()
@@ -72,5 +75,5 @@ export class CarDetailsDto {
   description: string;
 
   @Expose()
-  owner: string;
+  ownerId: string;
 }

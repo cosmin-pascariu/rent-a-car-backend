@@ -63,7 +63,10 @@ export class CarsService {
     dbCar.owner = new User();
     dbCar.owner.id = car.ownerId;
     await this.invalidateCarsCache();
-    return await this.carsRepository.save(dbCar);
+
+    const carData = await this.carsRepository.save(dbCar);
+    console.log('CAR DATA', carData);
+    return carData;
   }
 
   async updateCar(car: UpdateCarDto, carId: string) {

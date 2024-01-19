@@ -74,22 +74,22 @@ export class CarsController {
     return await this.carsService.getAllCars();
   }
 
-  @Get(':id')
+  @Get(':id/details')
   async getCarById(@Param('id') id: string) {
     return await this.carsService.getCarById(id);
   }
 
-  @Post()
+  @Post('/create')
   async createCarAPI(@Body() car: CreateCarDto) {
     return await this.carsService.createCar(car);
   }
 
-  @Put(':id')
+  @Put(':id/update')
   async updateCarAPI(@Body() car: UpdateCarDto, @Param('id') id: string) {
     return await this.carsService.updateCar(car, id);
   }
 
-  @Delete(':id')
+  @Delete(':id/delete')
   async deleteCarAPI(@Param('id') id: string) {
     return await this.carsService.deleteCar(id);
   }
