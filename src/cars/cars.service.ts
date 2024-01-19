@@ -1,51 +1,90 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { Repository } from 'typeorm';
 import { Car } from './car.entity';
+import { CarDetailsDto, CarDto, CreateCarDto, UpdateCarDto } from './cars.dtos';
+import { plainToClass } from 'class-transformer';
+import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 
 @Injectable()
 export class CarsService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
     @InjectRepository(Car)
     private readonly carsRepository: Repository<Car>,
+    @Inject(CACHE_MANAGER)
+    private readonly cacheManager: Cache,
   ) {}
 
-  async getAllUsers() {
-    return await this.usersRepository.find();
+  async getAllCars() {
+    // Cache
+    const cacheKey = `cars`;
+    let data: CarDto[] = await this.cacheManager.get(cacheKey);
+    if (!data) {
+      const cars = await this.carsRepository.find();
+      data = cars.map(
+        (
+          car, // map to retrieve only the needed fields
+        ) =>
+          plainToClass(CarDto, car, {
+            excludeExtraneousValues: true,
+          }),
+      );
+      await this.cacheManager.set(cacheKey, data, 1000000);
+    }
+
+    return data;
   }
 
-    async getAllCars() {
-        return await this.carsRepository.find();
+  async getCarById(id: string) {
+    // cache
+    const cacheKey = `cars-${id}`;
+    let data: CarDetailsDto = await this.cacheManager.get(cacheKey);
+
+    if (!data) {
+      const car = await this.carsRepository.findOneBy({ id });
+      data = plainToClass(CarDetailsDto, car, {
+        excludeExtraneousValues: true,
+      });
+      await this.cacheManager.set(cacheKey, data, 1000000);
     }
 
-    async createCar(car: Car) {
-        return await this.carsRepository.save(car);
-      }
+    return data;
+  }
 
-    async updateCar(car: Car) {
-        return await this.carsRepository.update(car.id, car);
-    }
+  async createCar(car: CreateCarDto) {
+    const dbCar = new Car();
+    dbCar.make = car.make;
+    dbCar.model = car.model;
+    dbCar.year = car.year;
+    dbCar.pricePerDay = car.pricePerDay;
+    dbCar.availabilityStatus = car.availabilityStatus;
+    dbCar.description = car.description;
+    dbCar.owner = new User();
+    dbCar.owner.id = car.ownerId;
+    await this.invalidateCarsCache();
+    return await this.carsRepository.save(dbCar);
+  }
 
-    async getCarById(id: string) {
-        try {
-            const car = await this.carsRepository.findOneBy({id});
-            if (!car) {
-                // Handle the case where the user is not found
-                // For example, throw a custom error or return null
-                console.log('Car not found!');
-            }
-            return car;
-        } catch (error) {
-            // Handle any other errors that might occur
-            // For example, log the error and throw a custom error
-            console.log('GET CAR ERROR:',error);
-        }
-    }
+  async updateCar(car: UpdateCarDto, carId: string) {
+    await this.invalidateCarCache(carId);
+    await this.invalidateCarsCache();
+    return await this.carsRepository.update(carId, car);
+  }
 
-    async deleteCar(id: string) {
-        return await this.carsRepository.delete(id);
-      }
+  async deleteCar(id: string) {
+    await this.invalidateCarCache(id);
+    await this.invalidateCarsCache();
+    return await this.carsRepository.delete(id);
+  }
+
+  private async invalidateCarCache(id: string) {
+    const cacheKey = `cars-${id}`;
+    await this.cacheManager.del(cacheKey);
+  }
+
+  private async invalidateCarsCache() {
+    const cacheKey = `cars`;
+    await this.cacheManager.del(cacheKey);
+  }
 }

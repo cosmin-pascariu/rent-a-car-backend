@@ -6,9 +6,14 @@ import { CarsService } from './cars.service';
 import { User } from 'src/users/user.entity';
 import { UsersController } from 'src/users/users.controller';
 import { UsersService } from 'src/users/users.service';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), TypeOrmModule.forFeature([Car])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([Car]),
+    CacheModule.register(),
+  ],
   controllers: [UsersController, CarsController],
   providers: [UsersService, CarsService],
 })

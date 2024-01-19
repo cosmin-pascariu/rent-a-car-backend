@@ -1,27 +1,41 @@
-import { Controller, Get, Post, Body, Render, Res, Param,  } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Render,
+  Res,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { CarsService } from './cars.service';
 import { Car } from './car.entity';
+import { CreateCarDto, UpdateCarDto } from './cars.dtos';
 
 @Controller('cars')
 export class CarsController {
-  constructor(private readonly usersService: UsersService, private readonly carsService: CarsService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly carsService: CarsService,
+  ) {}
 
-  @Get()
-  async getAllUsers() {
-    return await this.usersService.getAllUsers();
-  }
-
+  // For MVC
   @Post()
-  async createCar(@Body() car: Car, @Res() res: Response) {
+  async createCar(@Body() car: CreateCarDto, @Res() res: Response) {
     await this.carsService.createCar(car);
     res.redirect('/cars/view');
   }
 
-  @Post('update')
-  async updateCar(@Body() car: Car, @Res() res: Response) {
-    await this.carsService.updateCar(car);
+  @Post('update/:id')
+  async updateCar(
+    @Body() car: UpdateCarDto,
+    @Res() res: Response,
+    @Param('id') id: string,
+  ) {
+    await this.carsService.updateCar(car, id);
     res.redirect('/cars/view');
   }
 
@@ -37,7 +51,7 @@ export class CarsController {
   @Render('create-car')
   async reateCarsView() {
     const users = await this.usersService.getAllUsers();
-    return {users: users, message: 'Create car' };
+    return { users: users, message: 'Create car' };
   }
 
   @Get('update/:id')
@@ -52,5 +66,31 @@ export class CarsController {
   async deleteCar(@Param('id') id: string, @Res() res: Response) {
     await this.carsService.deleteCar(id);
     res.redirect('/cars/view');
+  }
+
+  // For API
+  @Get()
+  async getAllCars() {
+    return await this.carsService.getAllCars();
+  }
+
+  @Get(':id')
+  async getCarById(@Param('id') id: string) {
+    return await this.carsService.getCarById(id);
+  }
+
+  @Post()
+  async createCarAPI(@Body() car: CreateCarDto) {
+    return await this.carsService.createCar(car);
+  }
+
+  @Put(':id')
+  async updateCarAPI(@Body() car: UpdateCarDto, @Param('id') id: string) {
+    return await this.carsService.updateCar(car, id);
+  }
+
+  @Delete(':id')
+  async deleteCarAPI(@Param('id') id: string) {
+    return await this.carsService.deleteCar(id);
   }
 }

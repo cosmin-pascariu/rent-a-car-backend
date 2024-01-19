@@ -27,12 +27,15 @@
     "logical:backup": "pg_basebackup -U postgres -h localhost -p 5432 -D \"/Users/cosminpascariu/Desktop/rent-a-car-physical\" -F tar -v -P"
   },
   "dependencies": {
+    "@nestjs/cache-manager": "^2.2.0",
     "@nestjs/common": "^10.0.0",
-    "@nestjs/core": "^10.0.0",
+    "@nestjs/core": "^10.3.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/serve-static": "^4.0.0",
     "@nestjs/swagger": "^7.1.14",
     "@nestjs/typeorm": "^10.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "express": "^4.18.2",
     "hbs": "^4.2.0",
     "pg": "^8.11.3",
