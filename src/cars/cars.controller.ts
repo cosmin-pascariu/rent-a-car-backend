@@ -12,7 +12,6 @@ import {
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { CarsService } from './cars.service';
-import { Car } from './car.entity';
 import { CreateCarDto, UpdateCarDto } from './cars.dtos';
 
 @Controller('cars')
