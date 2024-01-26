@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { IsString } from 'class-validator';
 
 export class CreateReservationDto {
@@ -46,7 +46,12 @@ export class ReservationDto {
   reservationStatus: string;
 
   @Expose()
-  carId: string;
+  @Transform(({ obj }) => obj.client.id)
+  readonly clientId: string;
+
+  @Expose()
+  @Transform(({ obj }) => obj.car.id)
+  readonly carId: string;
 }
 
 export class ReservationDetailsDto {
@@ -64,29 +69,4 @@ export class ReservationDetailsDto {
 
   @Expose()
   reservationStatus: string;
-
-  @Expose()
-  carId: string;
-
-  @Expose()
-  carMake: string;
-
-  @Expose()
-  carModel: string;
-
-  @Expose()
-  carYear: string;
-
-  @Expose()
-  carPricePerDay: number;
-
-  @Expose()
-  carAvailabilityStatus: string;
-
-  @Expose()
-  carDescription: string;
-  f;
-
-  @Expose()
-  carOwnerId: string;
 }

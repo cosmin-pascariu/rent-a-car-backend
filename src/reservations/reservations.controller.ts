@@ -6,12 +6,14 @@ import {
   Param,
   Delete,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import {
   CreateReservationDto,
   UpdateReservationDto,
 } from './reservations.dtos';
 import { ReservationsService } from './reservations.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('reservations')
 export class ReservationsController {
@@ -22,6 +24,7 @@ export class ReservationsController {
     return await this.reservationsService.createReservation(reservation);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllReservations() {
     return await this.reservationsService.getAllReservations();

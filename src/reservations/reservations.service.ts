@@ -27,7 +27,10 @@ export class ReservationsService {
     const cacheKey = `reservations`;
     let data: ReservationDto[] = await this.cacheManager.get(cacheKey);
     if (!data) {
-      const reservations = await this.reservationsRepository.find();
+      const reservations = await this.reservationsRepository.find({
+        relations: ['client', 'car'],
+      });
+      console.log('reservations', reservations);
       data = reservations.map((reservation) =>
         plainToClass(ReservationDto, reservation, {
           excludeExtraneousValues: true,

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Get, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
@@ -24,19 +24,35 @@ export class UsersService {
 
   async getUserById(id: string) {
     try {
-        const user = await this.usersRepository.findOneBy({id});
-        if (!user) {
-            // Handle the case where the user is not found
-            // For example, throw a custom error or return null
-            console.log('User not found!');
-        }
-        return user;
+      const user = await this.usersRepository.findOneBy({ id });
+      if (!user) {
+        // Handle the case where the user is not found
+        // For example, throw a custom error or return null
+        console.log('User not found!');
+      }
+      return user;
     } catch (error) {
-        // Handle any other errors that might occur
-        // For example, log the error and throw a custom error
-        console.log('GET USER ERROR:',error);
+      // Handle any other errors that might occur
+      // For example, log the error and throw a custom error
+      console.log('GET USER ERROR:', error);
     }
-}
+  }
+
+  async getUserByEmail(email: string) {
+    try {
+      const user = await this.usersRepository.findOneBy({ email });
+      if (!user) {
+        // Handle the case where the user is not found
+        // For example, throw a custom error or return null
+        console.log('User not found!');
+      }
+      return user;
+    } catch (error) {
+      // Handle any other errors that might occur
+      // For example, log the error and throw a custom error
+      console.log('GET USER ERROR:', error);
+    }
+  }
 
   async deleteUser(id: string) {
     return await this.usersRepository.delete(id);

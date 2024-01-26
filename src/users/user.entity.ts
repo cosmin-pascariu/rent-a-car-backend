@@ -1,48 +1,34 @@
 import { Car } from 'src/cars/car.entity';
-import { Chat } from 'src/chats/chat.entity';
-import { Message } from 'src/messages/message.entity';
 import { Reservation } from 'src/reservations/reservation.entity';
 import { Review } from 'src/reviews/review.entity';
-import {
-    Column,
-    Entity,
-    OneToMany,
-    PrimaryGeneratedColumn,
-  } from 'typeorm';
-  
-  @Entity('users')
-  export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-    @Column({ unique: true })
-    email: string;
+@Entity('users')
+export class User {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column()
-    password: string;
-  
-    @Column({ name: 'user_name' })
-    userName: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column({ name: 'user_type' })
-    userType: string;
+  @Column()
+  password: string;
 
-    @Column({ name: 'contact_number' })
-    contactNumber: string;
+  @Column({ name: 'user_name' })
+  userName: string;
 
-    @OneToMany(() => Car, (car) => car.owner) //DONE
-    cars: Car[];
+  @Column({ name: 'user_type' })
+  userType: string;
 
-    @OneToMany(() => Reservation, (reservation) => reservation.client) //DONE
-    reservations: Reservation[];
+  @Column({ name: 'contact_number' })
+  contactNumber: string;
 
-    @OneToMany(() => Review, (review) => review.reviewer)
-    reviews: Review[];
+  @OneToMany(() => Car, (car) => car.owner) //DONE
+  cars: Car[];
 
-    @OneToMany(() => Chat, (chat) => chat.owner)
-    chats: Chat[];
+  @OneToMany(() => Reservation, (reservation) => reservation.client) //DONE
+  reservations: Reservation[];
 
-    @OneToMany(() => Message, (message) => message.sender)
-    messages: Message[];
-
-  }
+  @OneToMany(() => Review, (review) => review.reviewer)
+  reviews: Review[];
+}
