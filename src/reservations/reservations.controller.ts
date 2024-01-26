@@ -30,7 +30,7 @@ export class ReservationsController {
     return await this.reservationsService.getAllReservations();
   }
 
-  @Get('/:id')
+  @Get('/:id/details')
   async getReservationById(@Param('id') id: string) {
     return await this.reservationsService.getReservationById(id);
   }
@@ -46,5 +46,11 @@ export class ReservationsController {
   @Delete('/:id')
   async deleteReservation(@Param('id') id: string) {
     return await this.reservationsService.deleteReservation(id);
+  }
+
+  // check penalty
+  @Get('/:id/penalty')
+  async checkPenalty(@Param('id') id: string) {
+    return await this.reservationsService.checkPenalty(id);
   }
 }

@@ -96,34 +96,32 @@ export class ReservationsService {
     await this.cacheManager.del(cacheKey);
   }
 
-  // function for calculating the penalty for a reservation
-  async calculatePenalty(reservation: Reservation) {
+  async checkPenalty(reservationId: string) {
+    const reservation = await this.reservationsRepository.findOneBy({
+      id: reservationId,
+    });
+
+    if (!reservation) {
+      throw new Error('Reservation not found');
+    }
+
     const startDate = new Date(reservation.startDate);
     const endDate = new Date(reservation.endDate);
     const today = new Date();
 
-    // if the reservation has already started
     if (today >= startDate) {
-      // if the reservation has already ended
       if (today >= endDate) {
-        // if the reservation has already ended and the client has returned the car
         if (reservation.reservationStatus === 'returned') {
           return 0;
-        }
-        // if the reservation has already ended and the client has not returned the car
-        else {
+        } else {
           const penalty = (today.getTime() - endDate.getTime()) / 86400000;
           return penalty;
         }
-      }
-      // if the reservation has not ended yet
-      else {
+      } else {
         const penalty = (today.getTime() - startDate.getTime()) / 86400000;
         return penalty;
       }
-    }
-    // if the reservation has not started yet
-    else {
+    } else {
       return 0;
     }
   }

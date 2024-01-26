@@ -8,11 +8,13 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { UsersService } from 'src/users/users.service';
 import { CarsService } from './cars.service';
 import { CreateCarDto, UpdateCarDto } from './cars.dtos';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller('cars')
 export class CarsController {
@@ -68,6 +70,7 @@ export class CarsController {
   }
 
   // For API
+  @UseGuards(JwtAuthGuard)
   @Get()
   async getAllCars() {
     return await this.carsService.getAllCars();
